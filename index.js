@@ -5,9 +5,9 @@ const {
     REST, 
     Routes, 
     SlashCommandBuilder, 
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle
+    ActionRowBuilder, 
+    ButtonBuilder, 
+    ButtonStyle 
 } = require('discord.js');
 const express = require('express');
 
@@ -39,21 +39,21 @@ const ADMIN_ROLE_ID = '1532902851293216809'; // The Admin role being awarded
 const WEBSITE_URL = 'https://jmtc-wiki.com';
 
 // Add the Role ID you want the /get-role command to give out
-const GET_ROLE_COMMAND_ID = '1532931861821657129'; 
+const GET_ROLE_COMMAND_ID = 'YOUR_OPTIONAL_ROLE_ID_HERE'; 
 
 // ==========================================
 // MULTIPLE CHOICES DATA ARRAYS
 // ==========================================
 const GIF_CHOICES = [
-    'https://tenor.com/view/man-earth-rotation-control-gif-820168416650185793',
-    'https://cdn.discordapp.com/attachments/1514283667122421893/1514346265444614264/togif.gif',
-    'https://cdn.discordapp.com/attachments/1514283667122421893/1514318906335170700/togif.gif'
+    'https://giphy.com',
+    'https://giphy.com',
+    'https://giphy.com'
 ];
 
 const VIDEO_CHOICES = [
-    'https://youtu.be/W7qRjZ7pYdI',
-    'https://youtu.be/PAYkRnHi1Zo',
-    'https://www.youtube.com/watch?v=OJcgigg7ZGg'
+    'https://youtube.com',
+    'https://youtube.com',
+    'https://youtube.com'
 ];
 
 // ==========================================
@@ -77,7 +77,7 @@ const commands = [
         .setDescription('give admin (only available to high command)')
         .addUserOption(option => 
             option.setName('target')
-                .setDescription('The nigger you want to give admin')
+                .setDescription('The user you want to give admin')
                 .setRequired(true)),
 
     new SlashCommandBuilder()
@@ -130,7 +130,7 @@ client.on('interactionCreate', async (interaction) => {
 
     const { commandName, options, member, guild } = interaction;
 
-// 1. /about Command logic
+    // 1. /about command logic
     if (commandName === 'about') {
         await interaction.reply({
             content: `**IPW bot**\nbot ryan made for **ISLAMIC POT WILAYAH**.\n*running on node.js, if you want more commands ask ryan*`,
@@ -138,15 +138,15 @@ client.on('interactionCreate', async (interaction) => {
         });
     }
 
-    // 2. /help Command logic
+    // 2. /help command logic
     if (commandName === 'help') {
         await interaction.reply({
-            content: `### available commands\n* \`/about\` - shows stuff about the bot\n* \`/help\` - Opens this\n* \`/jmtc-wiki\` - leads to JMTC's wiki\n* \`/admin [user]\` - makes a fellow nigga admin *(only available for high command)*`,
+            content: `### available commands\n* \`/about\` - shows stuff about the bot\n* \`/help\` - Opens this menu\n* \`/jmtc-wiki\` - leads to JMTC's wiki\n* \`/random-gif\` - drops a random GIF out of multiple choices\n* \`/get-role\` - gives you the community role\n* \`/random-video\` - posts a random video link\n* \`/admin [user]\` - makes one of your niggas admin *(only available for high command)*`,
             ephemeral: true
         });
     }
 
-    // 3. /jmtc-wiki Command logic
+    // 3. /jmtc-wiki command logic
     if (commandName === 'jmtc-wiki') {
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
@@ -160,16 +160,24 @@ client.on('interactionCreate', async (interaction) => {
         });
     }
 
-    // 4. /admin Command logic
+    // 4. /admin command logic
     if (commandName === 'admin') {
-        // Access Protection: Check if user has the specific staff role
         if (!member.roles.cache.has(STAFF_ROLE_ID)) {
-            return interaction.reply({
-                content: '❌ **Access Denied:** HAHA NIGGER YOU DONT HAVE HIGH COMMAND LOLZ',
-                ephemeral: true
-            });
+            return interaction.reply({ content: '❌ **Access Denied:** HAHA NIGGER YOU DONT HAVE HIGH COMMAND LOLZ', ephemeral: true });
         }
+        const targetUser = options.getMember('target');
+        if (!targetUser) return interaction.reply({ content: 'Could not resolve target profile.', ephemeral: true });
 
+        try {
+            const adminRole = guild.roles.cache.get(ADMIN_ROLE_ID);
+            if (!adminRole) return interaction.reply({ content: '❌ Configuration Error: Target Admin Role ID missing.', ephemeral: true });
+            await targetUser.roles.add(adminRole);
+            await interaction.reply({ content: `✅ **ranking complete:** ${targetUser} has been promoted to admin via George Droid Services. Thank you ${member.user}, for using George Droid Services.` });
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({ content: `❌ **Failed Execution:** Check bot hierarchy placement.`, ephemeral: true });
+        }
+    }
 
     // 5. /random-gif logic
     if (commandName === 'random-gif') {
@@ -185,10 +193,10 @@ client.on('interactionCreate', async (interaction) => {
                 return interaction.reply({ content: '❌ Configuration Error: The specified role ID was not found in this server.', ephemeral: true });
             }
             if (member.roles.cache.has(GET_ROLE_COMMAND_ID)) {
-                return interaction.reply({ content: 'You already possess this server role.', ephemeral: true });
+                return interaction.reply({ content: 'You already have this role nigger', ephemeral: true });
             }
             await member.roles.add(roleToGive);
-            await interaction.reply({ content: `✅ Success! You have been granted the **${roleToGive.name}** role.`, ephemeral: true });
+            await interaction.reply({ content: `✅ you got the **${roleToGive.name}** role.`, ephemeral: true });
         } catch (error) {
             console.error(error);
             await interaction.reply({ content: '❌ System Error: Unable to assign your role. Check bot hierarchy restrictions.', ephemeral: true });
