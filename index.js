@@ -39,21 +39,21 @@ const ADMIN_ROLE_ID = '1532902851293216809'; // The Admin role being awarded
 const WEBSITE_URL = 'https://jmtc-wiki.com';
 
 // Add the Role ID you want the /get-role command to give out
-const GET_ROLE_COMMAND_ID = 'YOUR_OPTIONAL_ROLE_ID_HERE'; 
+const GET_ROLE_COMMAND_ID = '1532931861821657129'; 
 
 // ==========================================
 // MULTIPLE CHOICES DATA ARRAYS
 // ==========================================
 const GIF_CHOICES = [
-    'https://giphy.com',
-    'https://giphy.com',
-    'https://giphy.com'
+    'https://tenor.com/view/man-earth-rotation-control-gif-820168416650185793',
+    'https://cdn.discordapp.com/attachments/1514283667122421893/1514346265444614264/togif.gif',
+    'https://cdn.discordapp.com/attachments/1514283667122421893/1514318906335170700/togif.gif'
 ];
 
 const VIDEO_CHOICES = [
-    'https://youtube.com',
-    'https://youtube.com',
-    'https://youtube.com'
+    'https://youtu.be/W7qRjZ7pYdI',
+    'https://youtu.be/PAYkRnHi1Zo',
+    'https://youtu.be/YgiyWGyJcIc'
 ];
 
 // ==========================================
