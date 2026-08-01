@@ -76,7 +76,7 @@ const commands = [
 
     new SlashCommandBuilder()
         .setName('jmtc-wiki')
-        .setDescription('go to Jihadist Movement on The Computer\'s wiki'), 
+        .setDescription('go to Jihadist Movement on The Computer's wiki'), 
 
     new SlashCommandBuilder()
         .setName('admin')
@@ -97,12 +97,11 @@ const commands = [
     new SlashCommandBuilder()
         .setName('random-video')
         .setDescription('Sends a random video link chosen from multiple options')
-].map(command => command.toJSON());
 
     new SlashCommandBuilder()
         .setName('trcu-docs')
         .setDescription('access trcu classified docs😂'),
-
+].map(command => command.toJSON());
 
 // ==========================================
 // BOT INITIALIZATION & SETUP
@@ -150,13 +149,20 @@ client.on('interactionCreate', async (interaction) => {
     }
 
     // 2. /help command logic
-    if (commandName === 'help') {
-        await interaction.reply({
-            content: `### available commands\n* \`/about\` - shows stuff about the bot\n* \`/help\` - Opens this menu\n* \`/jmtc-wiki\` - leads to JMTC's wiki\n* \`/random-gif\` - drops a random GIF out of multiple choices\n* \`/get-role\` - gives you the community role\n* \`/random-video\` - posts a random video link\n* \`/admin [user]\` - makes one of your niggas admin *(only available for high command)*`* \`/trcu-docs\` - opens classified trcu docs
-,
-            ephemeral: true
-        });
-    }
+  if (commandName === 'help') {
+    await interaction.reply({
+        content: `### available commands
+* \`/about\` - shows stuff about the bot
+* \`/help\` - Opens this menu
+* \`/jmtc-wiki\` - leads to JMTC's wiki
+* \`/random-gif\` - drops a random GIF out of multiple choices
+* \`/get-role\` - gives you the community role
+* \`/random-video\` - posts a random video link
+* \`/admin [user]\` - makes someone admin *(only available for high command)*
+* \`/trcu-docs\` - opens trcu docs`,
+        ephemeral: true
+    });
+}
 
     // 3. /jmtc-wiki command logic
     if (commandName === 'jmtc-wiki') {
@@ -229,7 +235,7 @@ client.on('interactionCreate', async (interaction) => {
                 .setURL(TRCU_DOC_1)
                 .setStyle(ButtonStyle.Link),
             new ButtonBuilder()
-                .setLabel('commissioner order 001)
+                .setLabel('commissioner order 001')
                 .setURL(TRCU_DOC_2)
                 .setStyle(ButtonStyle.Link),
             new ButtonBuilder()
