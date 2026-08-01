@@ -76,7 +76,7 @@ const commands = [
 
     new SlashCommandBuilder()
         .setName('jmtc-wiki')
-        .setDescription('go to Jihadist Movement on The Computer's wiki'), 
+        .setDescription('go to Jihadist Movement on The Computer\'s wiki'), 
 
     new SlashCommandBuilder()
         .setName('admin')
