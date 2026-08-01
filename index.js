@@ -68,7 +68,7 @@ const VIDEO_CHOICES = [
 const commands = [
     new SlashCommandBuilder()
         .setName('about')
-        .setDescription('learn more about Islamic Pot Wilayah\'s bot'), 
+        .setDescription('learn more about Islamic Pot Wilayah\'s bot'),
 
     new SlashCommandBuilder()
         .setName('help')
@@ -76,12 +76,12 @@ const commands = [
 
     new SlashCommandBuilder()
         .setName('jmtc-wiki')
-        .setDescription('go to Jihadist Movement on The Computer\'s wiki'), 
+        .setDescription("go to Jihadist Movement on The Computer's wiki"),
 
     new SlashCommandBuilder()
         .setName('admin')
         .setDescription('give admin (only available to high command)')
-        .addUserOption(option => 
+        .addUserOption(option =>
             option.setName('target')
                 .setDescription('The user you want to give admin')
                 .setRequired(true)),
@@ -96,11 +96,11 @@ const commands = [
 
     new SlashCommandBuilder()
         .setName('random-video')
-        .setDescription('Sends a random video link chosen from multiple options')
+        .setDescription('Sends a random video link chosen from multiple options'),
 
     new SlashCommandBuilder()
         .setName('trcu-docs')
-        .setDescription('access trcu classified docs😂'),
+        .setDescription('access classified trcu docs')
 ].map(command => command.toJSON());
 
 // ==========================================
