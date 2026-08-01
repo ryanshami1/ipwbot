@@ -34,37 +34,63 @@ const client = new Client({
 const AUTO_ROLE_ID = process.env.AUTO_ROLE_ID;
 
 // Your configured server variables
-const STAFF_ROLE_ID = '1532902476292817061'; 
-const ADMIN_ROLE_ID = '1532902851293216809'; 
+const STAFF_ROLE_ID = '1532902389022064640'; // High Command authorized role
+const ADMIN_ROLE_ID = '1532902851293216809'; // The Admin role being awarded
 const WEBSITE_URL = 'https://jmtc-wiki.com';
+
+// Add the Role ID you want the /get-role command to give out
+const GET_ROLE_COMMAND_ID = '1532931861821657129'; 
+
+// ==========================================
+// MULTIPLE CHOICES DATA ARRAYS
+// ==========================================
+const GIF_CHOICES = [
+    'https://tenor.com/view/man-earth-rotation-control-gif-820168416650185793',
+    'https://cdn.discordapp.com/attachments/1514283667122421893/1514346265444614264/togif.gif',
+    'https://cdn.discordapp.com/attachments/1514283667122421893/1514318906335170700/togif.gif'
+];
+
+const VIDEO_CHOICES = [
+    'https://youtu.be/W7qRjZ7pYdI',
+    'https://youtu.be/PAYkRnHi1Zo',
+    'https://www.youtube.com/watch?v=OJcgigg7ZGg'
+];
 
 // ==========================================
 // SLASH COMMANDS DEFINITIONS
 // ==========================================
 const commands = [
-    // /about command
     new SlashCommandBuilder()
         .setName('about')
-        .setDescription('learn more about Islamic Pot Wilayah's bot'),
+        .setDescription('learn more about Islamic Pot Wilayah\'s bot'), 
 
-    // /help command
     new SlashCommandBuilder()
         .setName('help')
         .setDescription('shows all bot commands'),
 
-    // /jmtc-wiki command
     new SlashCommandBuilder()
         .setName('jmtc-wiki')
-        .setDescription('go to Jihadist Movement on The Computer's wiki'),
+        .setDescription('go to Jihadist Movement on The Computer\'s wiki'), 
 
-    // /admin command
     new SlashCommandBuilder()
         .setName('admin')
-        .setDescription('give admin (only available to high command')
+        .setDescription('give admin (only available to high command)')
         .addUserOption(option => 
             option.setName('target')
                 .setDescription('The nigger you want to give admin')
-                .setRequired(true))
+                .setRequired(true)),
+
+    new SlashCommandBuilder()
+        .setName('random-gif')
+        .setDescription('Sends a random GIF chosen from multiple options'),
+
+    new SlashCommandBuilder()
+        .setName('get-role')
+        .setDescription('Claim your designated community role instantly'),
+
+    new SlashCommandBuilder()
+        .setName('random-video')
+        .setDescription('Sends a random video link chosen from multiple options')
 ].map(command => command.toJSON());
 
 // ==========================================
@@ -73,18 +99,16 @@ const commands = [
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
 
-    // Feature 3: Dynamic Member Tracking Activity Status
     const updateActivity = () => {
         const guild = client.guilds.cache.first();
         if (guild) {
             const humanCount = guild.members.cache.filter(m => !m.user.bot).size || guild.memberCount;
-            client.user.setActivity(`${humanCount} active humans!`, { type: 3 }); // Type 3 = "Watching"
+            client.user.setActivity(`${humanCount} active humans!`, { type: 3 }); 
         }
     };
     updateActivity();
-    setInterval(updateActivity, 600000); // Refreshes stats every 10 minutes
+    setInterval(updateActivity, 600000); 
 
-    // Automatically register Slash Commands globally across all connected servers
     try {
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
         console.log('Started refreshing application global (/) commands.');
@@ -106,7 +130,7 @@ client.on('interactionCreate', async (interaction) => {
 
     const { commandName, options, member, guild } = interaction;
 
-    // 1. /about Command logic
+// 1. /about Command logic
     if (commandName === 'about') {
         await interaction.reply({
             content: `**IPW bot**\nbot ryan made for **ISLAMIC POT WILAYAH**.\n*running on node.js, if you want more commands ask ryan*`,
@@ -146,28 +170,35 @@ client.on('interactionCreate', async (interaction) => {
             });
         }
 
-        const targetUser = options.getMember('target');
-        if (!targetUser) {
-            return interaction.reply({ content: 'Could not resolve the selected target profile.', ephemeral: true });
-        }
 
+    // 5. /random-gif logic
+    if (commandName === 'random-gif') {
+        const randomGif = GIF_CHOICES[Math.floor(Math.random() * GIF_CHOICES.length)];
+        await interaction.reply({ content: randomGif });
+    }
+
+    // 6. /get-role logic
+    if (commandName === 'get-role') {
         try {
-            const adminRole = guild.roles.cache.get(ADMIN_ROLE_ID);
-            if (!adminRole) {
-                return interaction.reply({ content: '❌ Configuration Error: Target Admin Role ID was not found in this guild cache.', ephemeral: true });
+            const roleToGive = guild.roles.cache.get(GET_ROLE_COMMAND_ID);
+            if (!roleToGive) {
+                return interaction.reply({ content: '❌ Configuration Error: The specified role ID was not found in this server.', ephemeral: true });
             }
-
-            await targetUser.roles.add(adminRole);
-            await interaction.reply({
-                content: `✅ **ranking complete:** ${targetUser} has been promoted to admin via George Droid Services. Thank you ${member.user}, for using George Droid Services.`
-            });
+            if (member.roles.cache.has(GET_ROLE_COMMAND_ID)) {
+                return interaction.reply({ content: 'You already possess this server role.', ephemeral: true });
+            }
+            await member.roles.add(roleToGive);
+            await interaction.reply({ content: `✅ Success! You have been granted the **${roleToGive.name}** role.`, ephemeral: true });
         } catch (error) {
             console.error(error);
-            await interaction.reply({
-                content: `❌ **Failed Execution:** Ensure the bot's structural placement role is dragged *higher* than the Admin role in Server Settings.`,
-                ephemeral: true
-            });
+            await interaction.reply({ content: '❌ System Error: Unable to assign your role. Check bot hierarchy restrictions.', ephemeral: true });
         }
+    }
+
+    // 7. /random-video logic
+    if (commandName === 'random-video') {
+        const randomVideo = VIDEO_CHOICES[Math.floor(Math.random() * VIDEO_CHOICES.length)];
+        await interaction.reply({ content: randomVideo });
     }
 });
 
