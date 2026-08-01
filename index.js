@@ -45,25 +45,25 @@ const commands = [
     // /about command
     new SlashCommandBuilder()
         .setName('about')
-        .setDescription('Learn more about the ISLAMIC POT WILAYAH bot layout'),
+        .setDescription('learn more about Islamic Pot Wilayah's bot'),
 
     // /help command
     new SlashCommandBuilder()
         .setName('help')
-        .setDescription('Displays a comprehensive list of server modules'),
+        .setDescription('shows all bot commands'),
 
     // /jmtc-wiki command
     new SlashCommandBuilder()
         .setName('jmtc-wiki')
-        .setDescription('Get a fast access portal link to our community website'),
+        .setDescription('go to Jihadist Movement on The Computer's wiki'),
 
     // /admin command
     new SlashCommandBuilder()
         .setName('admin')
-        .setDescription('Assign the Admin role to a target user')
+        .setDescription('give admin (only available to high command')
         .addUserOption(option => 
             option.setName('target')
-                .setDescription('The user you want to upgrade to Administrator status')
+                .setDescription('The nigger you want to give admin')
                 .setRequired(true))
 ].map(command => command.toJSON());
 
@@ -109,7 +109,7 @@ client.on('interactionCreate', async (interaction) => {
     // 1. /about Command logic
     if (commandName === 'about') {
         await interaction.reply({
-            content: `**IPW Bot v2.0**\nCustom-built security framework engineered for **ISLAMIC POT WILAYAH**.\n*Hosting Core: Node.js, running live 24/7 on Render Cloud services.*`,
+            content: `**IPW bot**\nbot ryan made for **ISLAMIC POT WILAYAH**.\n*running on node.js, if you want more commands ask ryan*`,
             ephemeral: false
         });
     }
@@ -117,7 +117,7 @@ client.on('interactionCreate', async (interaction) => {
     // 2. /help Command logic
     if (commandName === 'help') {
         await interaction.reply({
-            content: `### Available Terminal Commands\n* \`/about\` - Displays bot operational system specs\n* \`/help\` - Opens this configuration manual\n* \`/jmtc-wiki\` - Delivers a direct navigational utility link\n* \`/admin [user]\` - Elevates a user to Administrator *(Restricted Access)*`,
+            content: `### available commands\n* \`/about\` - shows stuff about the bot\n* \`/help\` - Opens this\n* \`/jmtc-wiki\` - leads to JMTC's wiki\n* \`/admin [user]\` - makes a fellow nigga admin *(only available for high command)*`,
             ephemeral: true
         });
     }
@@ -126,12 +126,12 @@ client.on('interactionCreate', async (interaction) => {
     if (commandName === 'jmtc-wiki') {
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setLabel('Visit JMTC Wiki')
+                .setLabel('JMTC Wiki')
                 .setURL(WEBSITE_URL)
                 .setStyle(ButtonStyle.Link)
         );
         await interaction.reply({
-            content: 'Click the security routing token below to access our main database webpage:',
+            content: 'click the button below to go to JMTC wiki',
             components: [row]
         });
     }
@@ -141,7 +141,7 @@ client.on('interactionCreate', async (interaction) => {
         // Access Protection: Check if user has the specific staff role
         if (!member.roles.cache.has(STAFF_ROLE_ID)) {
             return interaction.reply({
-                content: '❌ **Access Denied:** You do not possess the required staff clearance role to execute this command.',
+                content: '❌ **Access Denied:** HAHA NIGGER YOU DONT HAVE HIGH COMMAND LOLZ',
                 ephemeral: true
             });
         }
@@ -159,7 +159,7 @@ client.on('interactionCreate', async (interaction) => {
 
             await targetUser.roles.add(adminRole);
             await interaction.reply({
-                content: `✅ **Elevation Complete:** ${targetUser} has been successfully promoted to the administrator role by ${member.user}.`
+                content: `✅ **ranking complete:** ${targetUser} has been promoted to admin via George Droid Services. Thank you ${member.user}, for using George Droid Services.`
             });
         } catch (error) {
             console.error(error);
