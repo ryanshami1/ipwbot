@@ -37,6 +37,12 @@ const AUTO_ROLE_ID = process.env.AUTO_ROLE_ID;
 const STAFF_ROLE_ID = '1532902389022064640'; // High Command authorized role
 const ADMIN_ROLE_ID = '1532902851293216809'; // The Admin role being awarded
 const WEBSITE_URL = 'https://jmtc-wiki.com';
+// Configure your 4 documentation links here
+const TRCU_DOC_1 = 'https://docs.google.com/document/d/1nk08hQ5W-rxIt7KQ23tZ7YlKLExBq1bzptFTk4tddL8/edit?tab=t.0';
+const TRCU_DOC_2 = 'https://docs.google.com/document/d/1tYe4GnR7gJ-QrY0-aC-_DQFpQcBlSb6kRN_mmdFBNoE/edit?tab=t.0';
+const TRCU_DOC_3 = 'https://docs.google.com/document/d/159G05XWyb1yj_YEBhcM879XnGwPcRAyKwplcImhS5sI/edit?tab=t.0';
+const TRCU_DOC_4 = 'https://docs.google.com/document/d/12OI81zFtmZPslRN3o4viy6sfVwQVCs2ew3ev-i37_6k/edit?tab=t.0';
+
 
 // Add the Role ID you want the /get-role command to give out
 const GET_ROLE_COMMAND_ID = '1532931861821657129'; 
@@ -93,6 +99,11 @@ const commands = [
         .setDescription('Sends a random video link chosen from multiple options')
 ].map(command => command.toJSON());
 
+    new SlashCommandBuilder()
+        .setName('trcu-docs')
+        .setDescription('access trcu classified docs😂'),
+
+
 // ==========================================
 // BOT INITIALIZATION & SETUP
 // ==========================================
@@ -141,7 +152,8 @@ client.on('interactionCreate', async (interaction) => {
     // 2. /help command logic
     if (commandName === 'help') {
         await interaction.reply({
-            content: `### available commands\n* \`/about\` - shows stuff about the bot\n* \`/help\` - Opens this menu\n* \`/jmtc-wiki\` - leads to JMTC's wiki\n* \`/random-gif\` - drops a random GIF out of multiple choices\n* \`/get-role\` - gives you the community role\n* \`/random-video\` - posts a random video link\n* \`/admin [user]\` - makes one of your niggas admin *(only available for high command)*`,
+            content: `### available commands\n* \`/about\` - shows stuff about the bot\n* \`/help\` - Opens this menu\n* \`/jmtc-wiki\` - leads to JMTC's wiki\n* \`/random-gif\` - drops a random GIF out of multiple choices\n* \`/get-role\` - gives you the community role\n* \`/random-video\` - posts a random video link\n* \`/admin [user]\` - makes one of your niggas admin *(only available for high command)*`* \`/trcu-docs\` - opens classified trcu docs
+,
             ephemeral: true
         });
     }
@@ -203,12 +215,40 @@ client.on('interactionCreate', async (interaction) => {
         }
     }
 
-    // 7. /random-video logic
+     // 7. /random-video logic
     if (commandName === 'random-video') {
         const randomVideo = VIDEO_CHOICES[Math.floor(Math.random() * VIDEO_CHOICES.length)];
         await interaction.reply({ content: randomVideo });
     }
-});
+
+    // 8. /trcu-docs command logic
+    if (commandName === 'trcu-docs') {
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setLabel('airforce access list')
+                .setURL(TRCU_DOC_1)
+                .setStyle(ButtonStyle.Link),
+            new ButtonBuilder()
+                .setLabel('commissioner order 001)
+                .setURL(TRCU_DOC_2)
+                .setStyle(ButtonStyle.Link),
+            new ButtonBuilder()
+                .setLabel('government building access info')
+                .setURL(TRCU_DOC_3)
+                .setStyle(ButtonStyle.Link),
+            new ButtonBuilder()
+                .setLabel('aerospace engineering handbook')
+                .setURL(TRCU_DOC_4)
+                .setStyle(ButtonStyle.Link)
+        );
+
+        await interaction.reply({
+            content: 'Select a link token below to view the requested documentation:',
+            components: [row]
+        });
+    }
+}); // This closing bracket marks the actual end of the interaction router!
+
 
 // ==========================================
 // CORE AUTO-ROLE LOGIC BLOCK
