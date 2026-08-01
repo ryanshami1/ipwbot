@@ -1,14 +1,13 @@
-require('dotenv').config(); // Loads variables from your environment
+require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
 const express = require('express');
 
 // ==========================================
-// 1. EXPRESS WEB SERVER (For UptimeRobot)
+// EXPRESS WEB SERVER (For UptimeRobot)
 // ==========================================
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Returns a status text when visited in a browser
 app.get('/', (req, res) => {
     res.send('Bot is online and running 24/7!');
 });
@@ -18,50 +17,53 @@ app.listen(PORT, () => {
 });
 
 // ==========================================
-// 2. DISCORD BOT CONFIGURATION
+// DISCORD BOT CONFIGURATION
 // ==========================================
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers // Crucial intent to spot new users
+        GatewayIntentBits.GuildMembers 
     ]
 });
 
-// Grab the Auto Role ID from your environment settings
 const AUTO_ROLE_ID = process.env.AUTO_ROLE_ID; 
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
-// Listens for a user completing verification or joining the server
-// Fires when a member changes (like passing the rules screening gate)
-client.on('guildMemberUpdate', async (oldMember, newMember) => {
-    console.log(`[Diagnostic] Update event triggered for: ${newMember.user.tag}`);
-    console.log(`[Diagnostic] Old pending: ${oldMember.pending} | New pending: ${newMember.pending}`);
+// Helper function to safely give the role to a target member
+async function assignAutoRole(member) {
+    // CRUCIAL: If the updating user is a bot, skip them entirely!
+    if (member.user.bot) return;
 
-    // If your server does NOT have a rules gate, they won't be "pending"
-    // Let's make it assign the role if they pass screening OR if they just need the role
-    if ((oldMember.pending && !newMember.pending) || (!newMember.pending && !newMember.roles.cache.has(AUTO_ROLE_ID))) {
-        try {
-            console.log(`[Diagnostic] Attempting to look up Role ID: ${AUTO_ROLE_ID}`);
-            const role = newMember.guild.roles.cache.get(AUTO_ROLE_ID);
-            
-            if (!role) {
-                console.error("[Diagnostic Error] Could not find the role in cache! Double check AUTO_ROLE_ID on Render.");
-                return;
-            }
+    // Skip if they are still pending/waiting on server onboarding screens
+    if (member.pending) return;
 
-            console.log(`[Diagnostic] Role found: "${role.name}". Attempting to add...`);
-            await newMember.roles.add(role);
-            console.log(`[Success] Successfully assigned role to: ${newMember.user.tag}`);
-            
-        } catch (error) {
-            console.error("[Diagnostic Error] Failed to add role. Check if bot role is dragged above this role! Details:", error.message);
+    // Skip if they already have the role to prevent loops
+    if (member.roles.cache.has(AUTO_ROLE_ID)) return;
+
+    try {
+        const role = member.guild.roles.cache.get(AUTO_ROLE_ID);
+        if (role) {
+            await member.roles.add(role);
+            console.log(`[Success] Gave the role to human user: ${member.user.tag}`);
+        } else {
+            console.error("[Error] Role ID not found in cache. Check AUTO_ROLE_ID on Render.");
         }
+    } catch (error) {
+        console.error("[Error] Failed to add role. Check role hierarchy!", error.message);
     }
+}
+
+// Event 1: When a user freshly joins the server
+client.on('guildMemberAdd', async (member) => {
+    await assignAutoRole(member);
 });
 
+// Event 2: When a user completes rules screening / verification
+client.on('guildMemberUpdate', async (oldMember, newMember) => {
+    await assignAutoRole(newMember);
+});
 
-// Log your bot online using the secure token
 client.login(process.env.DISCORD_TOKEN);
